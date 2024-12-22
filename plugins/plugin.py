@@ -2,11 +2,11 @@ import pcbnew
 import wx
 import os
 
-def set_hole_diameter(pcb, diameter):
+def set_pad_size(pcb, diameter):
     for footprint in pcb.GetFootprints():
         for pad in footprint.Pads():
-            pad.SetDrillSize(pcbnew.VECTOR2I_MM(diameter, diameter))
-            print(f"Set hole diameter of pad {pad.GetPadName()} to {diameter}mm")
+            pad.SetSize(pcbnew.VECTOR2I_MM(diameter, diameter))
+            print(f"Set pad diameter of pad {pad.GetPadName()} to {diameter}mm")
 
 class DiameterDialog(wx.Dialog):
     def __init__(self, parent, title):
@@ -19,9 +19,9 @@ class DiameterDialog(wx.Dialog):
         vbox = wx.BoxSizer(wx.VERTICAL)
 
         hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-        st1 = wx.StaticText(self, label='Hole Diameter (mm)')
+        st1 = wx.StaticText(self, label='Pad Diameter (mm)')
         hbox1.Add(st1, flag=wx.RIGHT, border=8)
-        self.tc = wx.TextCtrl(self, value="0.8")
+        self.tc = wx.TextCtrl(self, value="1.6")
         hbox1.Add(self.tc, proportion=1)
         vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 
@@ -46,11 +46,11 @@ class DiameterDialog(wx.Dialog):
     def get_diameter(self):
         return float(self.tc.GetValue())
 
-class SetHoleDiameterPlugin(pcbnew.ActionPlugin):
+class SetPadSizePlugin(pcbnew.ActionPlugin):
     def defaults(self):
-        self.name = "Set Hole Diameter"
+        self.name = "Set Pad Diameter"
         self.category = "Modify PCB"
-        self.description = "Sets the hole diameter of all pads in the PCB."
+        self.description = "Sets the pad diameter of all pads in the PCB."
         self.pcbnew_icon_support = hasattr(self, "show_toolbar_button")
         self.show_toolbar_button = True
         self.icon_file_name = os.path.join(os.path.dirname(__file__), 'icon.png')
@@ -65,13 +65,13 @@ class SetHoleDiameterPlugin(pcbnew.ActionPlugin):
         else:
             app = wx.GetApp()
 
-        dialog = DiameterDialog(None, title="Set Hole Diameter")
+        dialog = DiameterDialog(None, title="Set Pad Size")
         if dialog.ShowModal() == wx.ID_OK:
             diameter = dialog.get_diameter()
-            print(f"Setting hole diameter to {diameter}mm")
-            set_hole_diameter(pcb, diameter)
+            print(f"Setting pad size to {diameter}mm")
+            set_pad_size(pcb, diameter)
             pcbnew.Refresh()
-            print("Hole diameter setting completed.")
+            print("Pad size setting completed.")
         dialog.Destroy()
 
-SetHoleDiameterPlugin().register()
+SetPadSizePlugin().register()

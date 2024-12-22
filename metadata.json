@@ -1,24 +1,24 @@
 {
   "$schema": "https://go.kicad.org/pcm/schemas/v1",
-  "name": "Set Hole Diameter",
+  "name": "Set Pad Size",
   "type": "plugin",
   "description": "Sets the hole diameter of all pads in the PCB to a specified value.",
   "description_full": "The SetHoleDiameter plugin is a KiCad action plugin that sets the hole diameter of all pads in the PCB to a fixed size. The default value is 0.8mm. When manufacturing and drilling PCBs by hand, it can happen that holes are drilled that are smaller than the holes in the original footprints. In this case, drilling leaves a small ring of PCB base material without copper around the hole. This causes problems when soldering. Setting all holes to a minimum diameter ensures that each hole is surrounded by copper.",
-  "identifier": "com.github.seigedigital.setholediameterpluginforkicad",
+  "identifier": "setpadsize",
   "author": {
-    "name": "Leander Seige (seige.digital GbR)",
+    "name": "Pablo Cremades",
     "contact": {
-      "mail": "kontakt@seige.digital"
+      "mail": "pcremades@fcen.uncu.edu.ar"
     }
   },
   "resources": {
-    "homepage": "https://github.com/seigedigital/setholediameterpluginforkicad"
+    "homepage": "https://github.com/pcremades/setpadsize"
   },
   "versions": [{
-    "version": "1.0.3",
+    "version": "0.0.1",
     "kicad_version": "8.0",
     "status": "stable",
-    "download_url": "https://github.com/seigedigital/setholediameterpluginforkicad/releases/download/v1.0.3/SetHoleDiameterPlugin-1.0.3.zip"
+    "download_url": "https://github.com/pcremades/setpadsize/releases/download/v1.0.3/SetHoleDiameterPlugin-1.0.3.zip"
   }],  
   "license": "GPL"
 }

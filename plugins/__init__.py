@@ -1,6 +1,6 @@
 try:
-    from .plugin import SetHoleDiameterPlugin
-    plugin = SetHoleDiameterPlugin()
+    from .plugin import SetPadSizePlugin
+    plugin = SetPadSizePlugin()
     plugin.register()
 except Exception as e:
     import logging
