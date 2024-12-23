@@ -2,18 +2,21 @@ import pcbnew
 import wx
 import os
 
-def set_pad_size(pcb, diameter):
+def set_pad_size(pcb, diameter, padTypes):
     for footprint in pcb.GetFootprints():
         for pad in footprint.Pads():
-            pad.SetSize(pcbnew.VECTOR2I_MM(diameter, diameter))
-            print(f"Set pad diameter of pad {pad.GetPadName()} to {diameter}mm")
+            if pad.GetShape() in padTypes:
+                pad.SetSize(pcbnew.VECTOR2I_MM(diameter, diameter))
+                # print(pad.GetShape())
+            # print(f"Set pad diameter of pad {pad.GetPadName()} to {diameter}mm")
 
 class DiameterDialog(wx.Dialog):
     def __init__(self, parent, title):
-        super(DiameterDialog, self).__init__(parent, title=title, size=(250, 150))
+        super(DiameterDialog, self).__init__(parent, title=title, size=(250, 250))
         self.init_ui()
-        self.SetSizeHints(250, 150, 250, 150)
+        self.SetSizeHints(250, 250, 250, 250)
         self.Centre()
+        self.padTypes = []
 
     def init_ui(self):
         vbox = wx.BoxSizer(wx.VERTICAL)
@@ -25,12 +28,24 @@ class DiameterDialog(wx.Dialog):
         hbox1.Add(self.tc, proportion=1)
         vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 
-        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox2 = wx.BoxSizer(wx.VERTICAL)
+        st2 = wx.StaticText(self, label='Pad Shape')
+        self.checkCircle = wx.CheckBox(self, label='Circle', )
+        self.checkCircle.SetValue(True)
+        self.checkRect = wx.CheckBox(self, label='Rectalgular')
+        self.checkOval = wx.CheckBox(self, label='Oval')
+        hbox2.Add(st2, flag=wx.LEFT, border=8)
+        hbox2.Add(self.checkCircle)
+        hbox2.Add(self.checkRect)
+        hbox2.Add(self.checkOval)
+        vbox.Add(hbox2, flag=wx.ALIGN_LEFT|wx.TOP|wx.BOTTOM, border=10)
+
+        hbox3 = wx.BoxSizer(wx.HORIZONTAL)
         okButton = wx.Button(self, label='Ok')
         closeButton = wx.Button(self, label='Close')
-        hbox2.Add(okButton)
-        hbox2.Add(closeButton, flag=wx.LEFT|wx.BOTTOM, border=5)
-        vbox.Add(hbox2, flag=wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, border=10)
+        hbox3.Add(okButton)
+        hbox3.Add(closeButton, flag=wx.LEFT|wx.BOTTOM, border=5)
+        vbox.Add(hbox3, flag=wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, border=10)
 
         self.SetSizer(vbox)
 
@@ -45,6 +60,15 @@ class DiameterDialog(wx.Dialog):
 
     def get_diameter(self):
         return float(self.tc.GetValue())
+
+    def get_pad_types(self):
+        if self.checkCircle.IsChecked():
+            self.padTypes.append(pcbnew.PAD_SHAPE_CIRCLE)
+        if self.checkRect.IsChecked():
+            self.padTypes.append(pcbnew.PAD_SHAPE_RECT)
+        if self.checkOval.IsChecked():
+            self.padTypes.append(pcbnew.PAD_SHAPE_OVAL)
+        return self.padTypes
 
 class SetPadSizePlugin(pcbnew.ActionPlugin):
     def defaults(self):
@@ -68,10 +92,12 @@ class SetPadSizePlugin(pcbnew.ActionPlugin):
         dialog = DiameterDialog(None, title="Set Pad Size")
         if dialog.ShowModal() == wx.ID_OK:
             diameter = dialog.get_diameter()
+            padTypes = dialog.get_pad_types()
             print(f"Setting pad size to {diameter}mm")
-            set_pad_size(pcb, diameter)
+            set_pad_size(pcb, diameter, padTypes)
             pcbnew.Refresh()
             print("Pad size setting completed.")
+            print(f'Pads: {padTypes}')
         dialog.Destroy()
 
 SetPadSizePlugin().register()
