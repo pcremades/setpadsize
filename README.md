@@ -3,7 +3,7 @@
 ## Description
 The `Set Pad Size` plugin is a KiCad action plugin that edits the pad size of all pads in the PCB to a unique size. The default value is 1.6mm. 
 
-**Why?** When manufacturing and drilling PCBs by hand, it can happen that holes are drilled that are smaller than the holes in the original footprints. In this case, drilling leaves a small ring of PCB base material without copper around the hole. This will cause problems when soldering. Setting all holes to a minimum diameter will ensure that each hole is surrounded by copper.
+**Why?** When manufacturing PCBs by hand (whether trough chemical etching or CNC milling), it's important to guarantee that pads have enough area so that they are not completly removed during fabrication. A good Pad size for through hole components is 2mm diameter (for drilling hole from 0.5mm to 1mm). Most footprints have Pads with a diameter of 1.6mm or less.
 
 ## Installation
 
@@ -21,6 +21,8 @@ cp -rp plugins <your_kicad_plugin_directory>/setpadsize
 ## Usage
 1. Open your PCB project in the KiCad PCB editor.
 2. Go to `Tools > External Plugins > Set Pad Size` to run the plugin.
+
+![](Screenshot.png)
 
 ## License
 This project is licensed under the GNU GPL Version 3 License - see the [LICENSE](LICENSE) file for details.
